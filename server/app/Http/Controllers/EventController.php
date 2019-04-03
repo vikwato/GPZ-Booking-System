@@ -17,8 +17,9 @@ class EventController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'organization_id' => 'required|exists:organizations,id'
+            'name' => 'required | string',
+            'organization_id' => 'required | exists:organizations,id',
+            'description' => 'required | string'
         ]);
 
         if($validator->fails()){
@@ -67,8 +68,10 @@ class EventController extends Controller
     public function select(Event $event)
     {
     	$bookings = $event->bookings()->get();
+        $organization = $event->organization()->get();
         $response = [
             'event' => $event,
+            'organization' => $organization,
             'bookings' => $bookings->load('rooms:name') // gets a booking and its rooms
         ];
 
